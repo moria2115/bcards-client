@@ -1,27 +1,33 @@
 import { useFormik } from "formik";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import User from "../interfaces/User";
 import { addUser } from "../services/usersService";
 import { successMsg } from "../services/feedbacks";
+import { UserData } from "../App";
+import jwtDecode from "jwt-decode";
 
 interface SignUpProps {}
 
 const SignUp: FunctionComponent<SignUpProps> = () => {
-  let [isBusiness, setIsBusiness] = useState<boolean>(false);
+  let { setIsLoggedIn, setUserId } = useContext(UserData);
+
   let navigate = useNavigate();
   let formik = useFormik({
-    initialValues: { email: "", password: "", name: "" },
+    initialValues: { email: "", password: "", name: "", isBusiness: false },
     validationSchema: yup.object({
       name: yup.string().required().min(2),
       email: yup.string().required().email().min(5),
       password: yup.string().required().min(8),
     }),
     onSubmit: (values: User) => {
-      addUser({ ...values, isBusiness })
+      addUser(values)
         .then((res) => {
-          navigate("/");
+          let payload: { _id: string; isBusiness: boolean } = jwtDecode(
+            res.data
+          );
+          navigate("/cards");
           sessionStorage.setItem(
             "userData",
             JSON.stringify({
@@ -30,6 +36,8 @@ const SignUp: FunctionComponent<SignUpProps> = () => {
             })
           );
           successMsg("You registered successfully!");
+          setIsLoggedIn(true);
+          setUserId(payload._id);
         })
         .catch((err) => console.log(err));
     },
@@ -45,7 +53,9 @@ const SignUp: FunctionComponent<SignUpProps> = () => {
             type="checkbox"
             role="switch"
             id="flexSwitchCheckDefault"
-            onChange={() => setIsBusiness(!isBusiness)}
+            onChange={() =>
+              (formik.values.isBusiness = !formik.values.isBusiness)
+            }
           />
           <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
             <i className="fa-solid fa-suitcase"></i> I'm a Business owner

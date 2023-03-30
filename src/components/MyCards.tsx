@@ -1,49 +1,51 @@
-import axios from "axios";
 import { FunctionComponent, useContext, useEffect, useState } from "react";
 import DeleteCardModal from "./DeleteCardModal";
 import UpdateCardModal from "./UpdateCardModal";
 import Card from "../interfaces/Card";
 import "../css/cards.css";
-import { getMyCards, getUserProfile } from "../services/usersService";
+import { getMyCards } from "../services/myCardsService";
+import jwtDecode from "jwt-decode";
+import { UserData } from "../App";
+import AddCardModal from "./AddCardModal";
 
 interface MyCardsProps {}
 
 const MyCards: FunctionComponent<MyCardsProps> = () => {
-  let [userId, setUserId] = useState<any>({});
-  let [myCards, setMyCards] = useState<Card[]>([]);
+  let [userId, setUserId] = useContext(UserData);
   let [cardId, setCardId] = useState<string>("");
   let [cardsChange, setCardsChange] = useState<boolean>(false);
   let [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   let [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
+  let [openAddModal, setOpenAddModal] = useState<boolean>(false);
 
+  let [irefresh, setIrefresh] = useState<boolean>(false);
   let refresh = () => {
-    setCardsChange(!cardsChange);
+    setIrefresh(!irefresh);
   };
-
+  let [cards, setCards] = useState<Card[]>([]);
+  let handleAddCard = () => {
+    setOpenAddModal(true);
+  };
   useEffect(() => {
-    getUserProfile()
+    getMyCards(userId)
       .then((res) => {
-        setUserId(res.data._id);
-        console.log(res.data._id);
+        setCards(res.data);
+        setCardsChange(!cardsChange);
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    getMyCards(userId).then((res) => {
-      console.log(res.data);
-
-      setMyCards(res.data);
-    });
-  }, []);
+      .catch((err) => console.log(err));
+  }, [refresh]);
 
   return (
     <>
       <div className="container">
         <h1 className="display-1 text-center">MY CARDS</h1>
-        {myCards.length ? (
+        <button className="btn btn-success" onClick={handleAddCard}>
+          <i className="fa-solid fa-plus"></i> Product
+        </button>
+        {cards.length ? (
           <div className="container">
             <div className="row">
-              {myCards.map((card: Card) => (
+              {cards.map((card: Card) => (
                 <div
                   className="card border col-md-3  m-2"
                   style={{ width: "18rem" }}
@@ -100,7 +102,11 @@ const MyCards: FunctionComponent<MyCardsProps> = () => {
         ) : (
           <p>No Cards</p>
         )}
-
+        <AddCardModal
+          show={openAddModal}
+          onHide={() => setOpenAddModal(false)}
+          refresh={refresh}
+        />
         <DeleteCardModal
           refresh={refresh}
           show={openDeleteModal}
@@ -117,5 +123,4 @@ const MyCards: FunctionComponent<MyCardsProps> = () => {
     </>
   );
 };
-
 export default MyCards;

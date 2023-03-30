@@ -1,14 +1,17 @@
 import { useFormik } from "formik";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import * as yup from "yup";
 import User from "../interfaces/User";
 import { checkUser } from "../services/usersService";
 import { Link, useNavigate } from "react-router-dom";
 import { errorMsg, successMsg } from "../services/feedbacks";
+import { UserData } from "../App";
+import jwtDecode from "jwt-decode";
 
 interface SignInProps {}
 
 const SignIn: FunctionComponent<SignInProps> = () => {
+  let { setIsLoggedIn, setUserId } = useContext(UserData);
   let navigate = useNavigate();
   let formik = useFormik({
     initialValues: { email: "", password: "" },
@@ -19,7 +22,10 @@ const SignIn: FunctionComponent<SignInProps> = () => {
     onSubmit: (values: User) => {
       checkUser(values)
         .then((res) => {
-          navigate("/");
+          let payload: { _id: string; biz: boolean } = jwtDecode(res.data);
+          navigate("/cards");
+          setIsLoggedIn(true);
+          setUserId(payload._id);
           successMsg("You logged in successfully!");
           sessionStorage.setItem(
             "userData",
