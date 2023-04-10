@@ -1,3 +1,13 @@
+**#Sign in information:
+**
+Business user:
+email: business@test.com
+password: 12345678
+**
+Regular user:
+email: user@test.com  
+password: 12345678**
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
