@@ -15,18 +15,15 @@ interface NavbarProps {}
 const Navbar: FunctionComponent<NavbarProps> = () => {
   let navigate = useNavigate();
   let { isLoggedIn, setIsLoggedIn } = useContext(UserData);
-  let [isBusiness, setIsBusiness] = useState<boolean>(false);
+  let [business, setBusiness] = useState<boolean>(false);
   useEffect(() => {
-    console.log(isLoggedIn);
-
     if (isLoggedIn) {
       let payload: { isBusiness: boolean } = jwtDecode(
         JSON.parse(sessionStorage.getItem("userData") as string).token
       );
-      setIsBusiness(payload.isBusiness);
-    } else setIsBusiness(false);
+      setBusiness(payload.isBusiness);
+    } else setBusiness(false);
   }, [isLoggedIn]);
-
   let handleCollapse = () => {
     var nav = document.getElementById("navbarSupportedContent");
     var btn = document.getElementById("close-button");
@@ -161,7 +158,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
                   </li>
                 </>
               )}
-              {isBusiness && (
+              {business && (
                 <>
                   <li className="nav-item mx-3">
                     <NavLink

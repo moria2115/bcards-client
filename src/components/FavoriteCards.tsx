@@ -55,14 +55,6 @@ const FavoriteCards: FunctionComponent<FavoriteCardsProps> = () => {
                     <i className="fa-solid fa-globe"></i> {card.website}
                   </span>
                 </div>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => {
-                    removeCardFromFavorites(card._id as string);
-                  }}
-                >
-                  <i className="fa-solid fa-trash"></i>
-                </button>
               </div>
             ))}
           </div>

@@ -3,7 +3,7 @@ import DeleteCardModal from "./DeleteCardModal";
 import UpdateCardModal from "./UpdateCardModal";
 import Card from "../interfaces/Card";
 import "../css/cards.css";
-import { getMyCards } from "../services/myCardsService";
+import { getMyCards } from "../services/cardsService";
 import jwtDecode from "jwt-decode";
 import { UserData } from "../App";
 import AddCardModal from "./AddCardModal";
@@ -11,7 +11,6 @@ import AddCardModal from "./AddCardModal";
 interface MyCardsProps {}
 
 const MyCards: FunctionComponent<MyCardsProps> = () => {
-  let [userId, setUserId] = useContext(UserData);
   let [cardId, setCardId] = useState<string>("");
   let [cardsChange, setCardsChange] = useState<boolean>(false);
   let [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
@@ -27,7 +26,7 @@ const MyCards: FunctionComponent<MyCardsProps> = () => {
     setOpenAddModal(true);
   };
   useEffect(() => {
-    getMyCards(userId)
+    getMyCards()
       .then((res) => {
         setCards(res.data);
         setCardsChange(!cardsChange);
@@ -40,7 +39,7 @@ const MyCards: FunctionComponent<MyCardsProps> = () => {
       <div className="container">
         <h1 className="display-1 text-center">MY CARDS</h1>
         <button className="btn btn-success" onClick={handleAddCard}>
-          <i className="fa-solid fa-plus"></i> Product
+          <i className="fa-solid fa-plus"></i> New Card
         </button>
         {cards.length ? (
           <div className="container">

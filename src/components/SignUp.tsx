@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { FunctionComponent, useContext, useState } from "react";
+import { FunctionComponent, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import User from "../interfaces/User";
@@ -117,7 +117,7 @@ const SignUp: FunctionComponent<SignUpProps> = () => {
           Sign Up
         </button>
       </form>
-      <Link to="/">Already have user? Login here</Link>
+      <Link to="/signin">Already have user? Signin here</Link>
     </div>
   );
 };

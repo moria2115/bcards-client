@@ -42,7 +42,7 @@ const AddCard: FunctionComponent<AddCardProps> = ({ onHide, refresh }) => {
   return (
     <>
       <h1 className="Display-1 text-center my-3">CREATE NEW CARD</h1>
-      <div className="container col-md-4">
+      <div className="container col-md-6">
         <form onSubmit={formik.handleSubmit}>
           <div className="form-floating my-3">
             <input
